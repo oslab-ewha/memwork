@@ -8,7 +8,6 @@ typedef enum {
 } section_t;
 
 cpufreq_t	cpufreqs[MAX_CPU_FREQS];
-mem_t		mems[MAX_MEMS];
 unsigned	n_cpufreqs;
 
 static char *
@@ -45,7 +44,7 @@ check_section(const char *line)
 }
 
 static BOOL
-insert_cpufreq(double wcet_scale, double energy)
+insert_cpufreq(double wcet_scale, double power_active, double power_idle)
 {
 	if (n_cpufreqs >= MAX_CPU_FREQS) {
 		errmsg("too many cpu frequencies");
@@ -57,17 +56,20 @@ insert_cpufreq(double wcet_scale, double energy)
 	}
 	n_cpufreqs++;
 	cpufreqs[n_cpufreqs - 1].wcet_scale = wcet_scale;
-	cpufreqs[n_cpufreqs - 1].energy = energy;
+	cpufreqs[n_cpufreqs - 1].power_active = power_active;
+	cpufreqs[n_cpufreqs - 1].power_idle = power_idle;
 	return TRUE;
 }
 
 static void
-insert_mem(mem_type_t mem_type, unsigned max_capacity, double wcet_scale, double energy)
+insert_mem(mem_type_t mem_type, unsigned max_capacity, double wcet_scale, double power_active, double power_idle)
 {
 	mem_t	*mem = &mems[mem_type - 1];
 
+	mem->wcet_scale = wcet_scale;
 	mem->max_capacity = max_capacity;
-	mem->energy = energy;
+	mem->power_active = power_active;
+	mem->power_idle = power_idle;
 }
 
 static void
@@ -76,7 +78,7 @@ parse_cpufreq(FILE *fp)
 	char	buf[1024];
 
 	while (fgets(buf, 1024, fp)) {
-		double	wcet_scale, energy;
+		double	wcet_scale, power_active, power_idle;
 
 		if (buf[0] == '#')
 			continue;
@@ -84,17 +86,17 @@ parse_cpufreq(FILE *fp)
 			fseek(fp, -1 * strlen(buf), SEEK_CUR);
 			return;
 		}
-		if (sscanf(buf, "%lf %lf", &wcet_scale, &energy) != 2) {
+		if (sscanf(buf, "%lf %lf %lf", &wcet_scale, &power_active, &power_idle) != 3) {
 			FATAL(2, "cannot load configuration: invalid CPU frequency format: %s", trim(buf));
 		}
 
 		if (wcet_scale < 0 || wcet_scale > 1) {
 			FATAL(2, "invalid cpu frequency wcet scale: %s", trim(buf));
 		}
-		if (energy < 0) {
-			FATAL(2, "invalid cpu frequency energy: %s", trim(buf));
+		if (power_active < 0 || power_idle < 0) {
+			FATAL(2, "invalid cpu frequency power: %s", trim(buf));
 		}
-		if (!insert_cpufreq(wcet_scale, energy)) {
+		if (!insert_cpufreq(wcet_scale, power_active, power_idle)) {
 			FATAL(2, "cannot insert CPU frequency: %s", trim(buf));
 		}
 	}
@@ -107,7 +109,7 @@ parse_mem(FILE *fp)
 
 	while (fgets(buf, 1024, fp)) {
 		unsigned	max_capacity;
-		double		wcet_scale, energy;
+		double		wcet_scale, power_active, power_idle;
 		mem_type_t	mem_type;
 		char		type[1024];
 
@@ -117,7 +119,7 @@ parse_mem(FILE *fp)
 			fseek(fp, -1 * strlen(buf), SEEK_CUR);
 			return;
 		}
-		if (sscanf(buf, "%s %u %lf %lf", type, &max_capacity, &wcet_scale, &energy) != 4) {
+		if (sscanf(buf, "%s %u %lf %lf %lf", type, &max_capacity, &wcet_scale, &power_active, &power_idle) != 5) {
 			FATAL(2, "cannot load configuration: invalid memory spec: %s", trim(buf));
 		}
 
@@ -127,8 +129,8 @@ parse_mem(FILE *fp)
 		if (wcet_scale < 0 || wcet_scale > 1) {
 			FATAL(2, "invalid memory wcet scale: %s", trim(buf));
 		}
-		if (energy < 0) {
-			FATAL(2, "invalid memory energy: %s", trim(buf));
+		if (power_active < 0 || power_idle < 0) {
+			FATAL(2, "invalid memory power: %s", trim(buf));
 		}
 
 		if (strcmp(type, "nvram") == 0)
@@ -138,7 +140,7 @@ parse_mem(FILE *fp)
 		else {
 			FATAL(2, "invalid memory type: %s", trim(buf));
 		}
-		insert_mem(mem_type, max_capacity, wcet_scale, energy);
+		insert_mem(mem_type, max_capacity, wcet_scale, power_active, power_idle);
 	}
 }
 

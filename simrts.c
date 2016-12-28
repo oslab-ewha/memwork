@@ -2,6 +2,7 @@
 
 extern policy_t	dfdm_policy;
 
+unsigned	max_simtime = 1000;
 unsigned	simtime;
 double	total_nwcet;
 policy_t	*policy = &dfdm_policy;
@@ -13,6 +14,7 @@ usage(void)
 "Usage: simrts <options> <config path>\n"
 " <options>\n"
 "      -h: this message\n"
+"      -t <max simulation time>: (default: 1000)\n"
 	);
 }
 
@@ -35,8 +37,14 @@ parse_args(int argc, char *argv[])
 {
 	int	c;
 
-	while ((c = getopt(argc, argv, "h")) != -1) {
+	while ((c = getopt(argc, argv, "t:h")) != -1) {
 		switch (c) {
+		case 't':
+			if (sscanf(optarg, "%u", &max_simtime) != 1) {
+				usage();
+				exit(1);
+			}
+			break;
 		case 'h':
 			usage();
 			break;
@@ -55,16 +63,16 @@ parse_args(int argc, char *argv[])
 	load_conf(argv[optind]);
 }
 
-static void
+static BOOL
 runsim(void)
 {
 	task_t	*task;
 
-	while ((task = get_edf_task())) {
-		schedule_task(task);
-		
-		requeue_task(task);
+	while (simtime <= max_simtime && (task = get_edf_task())) {
+		if (!schedule_task(task))
+			return FALSE;
 	}
+	return TRUE;
 }
 
 int
@@ -72,7 +80,11 @@ main(int argc, char *argv[])
 {
 	parse_args(argc, argv);
 
-	runsim();
+	if (!runsim()) {
+		FATAL(3, "simulation failed");
+	}
+
+	report_result();
 
 	return 0;
 }

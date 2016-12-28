@@ -1,6 +1,6 @@
 #include "simrts.h"
 
-static LIST_HEAD(tasks);
+LIST_HEAD(tasks);
 
 static task_t *
 create_task(unsigned wcet, unsigned period, unsigned memreq)
@@ -16,7 +16,7 @@ create_task(unsigned wcet, unsigned period, unsigned memreq)
 	return task;
 }
 
-static BOOL
+BOOL
 is_schedulable(void)
 {
 	struct list_head	*lp;
@@ -47,45 +47,92 @@ insert_task(unsigned wcet, unsigned period, unsigned memreq)
 		return FALSE;
 	}
 	calc_det(task);
-	requeue_task(task);
+	if (!requeue_task(task)) {
+		errmsg("unschedulable task detected");
+		return FALSE;
+	}
 	if (!is_schedulable()) {
 		errmsg("unschedulable task detected");
 		return FALSE;
 	}
+
 	return TRUE;
 }
 
 task_t *
 get_edf_task(void)
 {
-	return NULL;
+	task_t	*task;
+
+	if (list_empty(&tasks))
+		return NULL;
+	return list_entry(tasks.next, task_t, list);
+
+	return task;
 }
 
-void
+BOOL
 schedule_task(task_t *task)
 {
-	/// unsigned	time_runnable;
+	if (!policy->reassign_task(task)) {
+		return FALSE;
+	}
 
-	//// time_runnable = get_runnable_interval(task);
+	calc_idle_power_consumed(task->idle);
+
+	simtime += task->idle;
+	task->deadline -= task->idle;
+	task->idle = 0;
+
+	list_del_init(&task->list);
+	calc_active_power_consumed(task);
+	simtime += task->det;
+	task->deadline -= task->det;
+
+	return requeue_task(task);
 }
 
 void
 calc_det(task_t *task)
 {
-	task->det = (int)(task->wcet * cpufreqs[task->idx_cpufreq - 1].wcet_scale * mems[task->mem_type - 1].wcet_scale);
+	task->det = (int)(task->wcet / (cpufreqs[task->idx_cpufreq - 1].wcet_scale * mems[task->mem_type - 1].wcet_scale));
 }
 
-void
+BOOL
 requeue_task(task_t *task)
 {
 	struct list_head	*lp;
-	unsigned	sum_det = 0;
+	unsigned	ticks = 0;
+
+	ASSERT(list_empty(&task->list));
+
+	task->deadline += task->period;
 
 	list_for_each (lp, &tasks) {
 		task_t	*til = list_entry(lp, task_t, list);
-		if (task->period < sum_det + til->det)
-			break;
-		sum_det += til->det;
+		if (task->deadline < ticks + til->idle + til->det) {
+			task->deadline -= ticks;
+			if (task->deadline < til->idle) {
+				task->idle = task->deadline - task->det;
+				til->idle = til->idle - task->deadline;
+			}
+			else {
+				if (til->idle < task->det)
+					return FALSE;
+				task->idle = til->idle - task->det;
+				til->idle = 0;
+			}
+			list_add(&task->list, &til->list);
+			return TRUE;
+		}
+		ticks += (til->idle + til->det);
 	}
+
+	task->deadline -= ticks;
+	if (task->deadline < task->det)
+		return FALSE;
+	task->idle = task->deadline - task->det;
 	list_add_tail(&task->list, &tasks);
+
+	return TRUE;
 }

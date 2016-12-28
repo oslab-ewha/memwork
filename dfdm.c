@@ -8,24 +8,33 @@ dfdm_assign_task(task_t *task)
 
 	task->idx_cpufreq = 1;
 	for (i = 0; i < 2; i++) {
-		mem_t	*mem = &mems[mem_types_try[i] - 1];
-		if (mem->max_capacity > task->memreq + mem->amount) {
-			task->mem_type = mem_types_try[i];
-			mem->amount += task->memreq;
+		if (assign_mem(task, mem_types_try[i]))
 			return TRUE;
-		}
 	}
 	return FALSE;
 }
 
-static void
+static BOOL
 dfdm_reassign_task(task_t *task)
 {
-	if (task->mem_type != MEMTYPE_NONE) {
-		ASSERT(mems[task->mem_type - 1].amount >= task->memreq);
-		mems[task->mem_type - 1].amount -= task->memreq;
-		task->mem_type = MEMTYPE_NONE;
+	mem_type_t	mem_types_try[] = { MEMTYPE_NVRAM, MEMTYPE_DRAM };
+	int	i;
+
+	revoke_mem(task);
+
+	for (i = 0; i < 2; i++) {
+		if (assign_mem(task, mem_types_try[i])) {
+			int	j;
+
+			for (j = n_cpufreqs; j > 0; j--) {
+				task->idx_cpufreq = j;
+				if (is_schedulable())
+					return TRUE;
+			}
+			revoke_mem(task);
+		}
 	}
+	return FALSE;
 }
 
 policy_t	dfdm_policy = {
