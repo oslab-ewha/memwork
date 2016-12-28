@@ -1,11 +1,13 @@
 #include "simrts.h"
 
-extern policy_t	dfdm_policy;
+extern policy_t	policy_dfdm;
+extern policy_t	policy_dvs;
+extern policy_t	policy_dmem;
 
 unsigned	max_simtime = 1000;
 unsigned	simtime;
 double	total_nwcet;
-policy_t	*policy = &dfdm_policy;
+policy_t	*policy = &policy_dfdm;
 
 static void
 usage(void)
@@ -15,6 +17,7 @@ usage(void)
 " <options>\n"
 "      -h: this message\n"
 "      -t <max simulation time>: (default: 1000)\n"
+"      -p <policy>: dfdm(default), dvs, dmem\n"
 	);
 }
 
@@ -33,17 +36,34 @@ errmsg(const char *fmt, ...)
 }
 
 static void
+setup_policy(const char *strpol)
+{
+	if (strcmp(strpol, "dfdm") == 0)
+		policy = &policy_dfdm;
+	else if (strcmp(strpol, "dvs") == 0)
+		policy = &policy_dvs;
+	else if (strcmp(strpol, "dmem") == 0)
+		policy = &policy_dmem;
+	else {
+		FATAL(1, "unknown policy: %s", strpol);
+	}
+}
+
+static void
 parse_args(int argc, char *argv[])
 {
 	int	c;
 
-	while ((c = getopt(argc, argv, "t:h")) != -1) {
+	while ((c = getopt(argc, argv, "t:p:h")) != -1) {
 		switch (c) {
 		case 't':
 			if (sscanf(optarg, "%u", &max_simtime) != 1) {
 				usage();
 				exit(1);
 			}
+			break;
+		case 'p':
+			setup_policy(optarg);
 			break;
 		case 'h':
 			usage();

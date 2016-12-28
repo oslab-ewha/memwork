@@ -2,7 +2,7 @@ all: simrts
 
 CFLAGS = -g -Wall -DDEBUG
 
-simrts: simrts.o task.o conf.o mem.o power.o report.o dfdm.o debug.o
+simrts: simrts.o task.o conf.o mem.o power.o report.o dfdm.o dvs.o dmem.o debug.o
 	gcc -o simrts $^
 
 simrts.o: simrts.h ecm_list.h
