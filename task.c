@@ -2,6 +2,8 @@
 
 LIST_HEAD(tasks);
 
+unsigned	n_tasks;
+
 static task_t *
 create_task(unsigned wcet, unsigned period, unsigned memreq)
 {
@@ -12,6 +14,9 @@ create_task(unsigned wcet, unsigned period, unsigned memreq)
 	task->period = period;
 	task->memreq = memreq;
 	INIT_LIST_HEAD(&task->list);
+
+	n_tasks++;
+	task->no = n_tasks;
 
 	return task;
 }
@@ -122,7 +127,7 @@ requeue_task(task_t *task)
 				task->idle = til->idle - task->det;
 				til->idle = 0;
 			}
-			list_add(&task->list, &til->list);
+			list_add_tail(&task->list, &til->list);
 			return TRUE;
 		}
 		ticks += (til->idle + til->det);
@@ -132,7 +137,7 @@ requeue_task(task_t *task)
 	if (task->deadline < task->det)
 		return FALSE;
 	task->idle = task->deadline - task->det;
-	list_add_tail(&task->list, &tasks);
+	list_add(&task->list, &tasks);
 
 	return TRUE;
 }

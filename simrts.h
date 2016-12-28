@@ -30,6 +30,7 @@ typedef enum {
 } mem_type_t;
 
 typedef struct {
+	unsigned	no;
 	unsigned	wcet;
 	unsigned	period;
 	unsigned	memreq;
