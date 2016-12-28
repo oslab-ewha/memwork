@@ -14,3 +14,5 @@ report.o: simrts.h ecm_list.h
 dfdm.o: simrts.h ecm_list.h
 debug.o: simrts.h ecm_list.h
 
+tarball:
+	tar czvf simrts.tgz *.[ch] *.tmpl Makefile
