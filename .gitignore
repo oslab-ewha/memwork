@@ -1,0 +1,5 @@
+*.o
+*~
+simrts
+cscope.out
+*.conf
