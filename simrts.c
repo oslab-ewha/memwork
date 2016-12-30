@@ -6,8 +6,7 @@ extern policy_t	policy_dmem;
 
 unsigned	max_simtime = 1000;
 unsigned	simtime;
-double	total_nwcet;
-policy_t	*policy = &policy_dfdm;
+policy_t	*policy = NULL;
 
 static BOOL	verbose;
 
@@ -86,20 +85,42 @@ parse_args(int argc, char *argv[])
 	load_conf(argv[optind]);
 }
 
-static BOOL
+static void
 runsim(void)
 {
 	task_t	*task;
 
+	if (!setup_tasks()) {
+		FATAL(3, "failed to setup tasks");
+	}
+
 	while (simtime <= max_simtime && (task = pop_head_task())) {
-		if (!schedule_task(task))
-			return FALSE;
+		if (!schedule_task(task)) {
+			FATAL(3, "simulation failed");
+		}
 		check_queued_tasks();
 		add_utilization();
 		if (verbose)
 			show_queued_tasks();
 	}
-	return TRUE;
+
+	report_result();
+}
+
+static void
+runsim_all(void)
+{
+	policy_t	*policies[] = { &policy_dfdm, &policy_dvs, &policy_dmem };
+	int	i;
+
+	for (i = 0; i < 3; i++) {
+		policy = policies[i];
+		runsim();
+
+		simtime = 0;
+		cleanup_report();
+		reinit_tasks();
+	}
 }
 
 int
@@ -107,11 +128,10 @@ main(int argc, char *argv[])
 {
 	parse_args(argc, argv);
 
-	if (!runsim()) {
-		FATAL(3, "simulation failed");
-	}
-
-	report_result();
+	if (policy == NULL)
+		runsim_all();
+	else
+		runsim();
 
 	return 0;
 }

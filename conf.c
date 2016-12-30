@@ -165,9 +165,7 @@ parse_task(FILE *fp)
 		if (wcet >= period) {
 			FATAL(2, "wcet is larger or equal than period: %s", trim(buf));
 		}
-		if (!insert_task(wcet, period, memreq)) {
-			FATAL(2, "cannot insert task: %s", trim(buf));
-		}
+		insert_task(wcet, period, memreq);
 	}
 }
 

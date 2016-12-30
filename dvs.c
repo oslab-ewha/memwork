@@ -24,6 +24,7 @@ dvs_reassign_task(task_t *task)
 }
 
 policy_t	policy_dvs = {
+	"dvs",
 	dvs_assign_task,
 	dvs_reassign_task
 };

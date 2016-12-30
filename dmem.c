@@ -34,6 +34,7 @@ dmem_reassign_task(task_t *task)
 }
 
 policy_t	policy_dmem = {
+	"dmem",
 	dmem_assign_task,
 	dmem_reassign_task
 };

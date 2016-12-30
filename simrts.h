@@ -73,6 +73,7 @@ typedef struct {
 } mem_t;
 
 typedef struct {
+	const char	*name;
 	BOOL (*assign_task)(task_t *task);
 	BOOL (*reassign_task)(task_t *task);
 } policy_t;
@@ -83,13 +84,17 @@ extern cpufreq_t	cpufreqs[];
 extern policy_t	*policy;
 extern struct list_head	tasks;
 extern mem_t	mems[];
-extern double	power_consumed;
+extern double	power_consumed_cpu_active;
+extern double	power_consumed_mem_active;
+extern double	power_consumed_cpu_idle;
+extern double	power_consumed_mem_idle;
 
 void errmsg(const char *fmt, ...);
 
 void load_conf(const char *fpath);
 
-BOOL insert_task(unsigned wcet, unsigned period, unsigned memreq);
+void insert_task(unsigned wcet, unsigned period, unsigned memreq);
+BOOL setup_tasks(void);
 
 void calc_task_det(task_t *task);
 void revert_task_det(task_t *task);
@@ -100,6 +105,7 @@ BOOL is_schedulable(task_t *task);
 BOOL schedule_task(task_t *task);
 void requeue_task(task_t *task, unsigned ticks);
 void check_queued_tasks(void);
+void reinit_tasks(void);
 
 BOOL assign_mem(task_t *task, mem_type_t mem_type);
 void revoke_mem(task_t *task);
@@ -110,6 +116,7 @@ void calc_active_power_consumed(task_t *task, unsigned ret);
 
 void add_utilization(void);
 void report_result(void);
+void cleanup_report(void);
 
 extern const char *desc_task(task_t *task);
 extern void show_queued_tasks(void);

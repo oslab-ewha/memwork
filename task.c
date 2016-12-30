@@ -89,24 +89,40 @@ is_schedulable(task_t *task)
 	return TRUE;
 }
 
-BOOL
+void
 insert_task(unsigned wcet, unsigned period, unsigned memreq)
 {
 	task_t	*task;
 
 	task = create_task(wcet, period, memreq);
+	list_add_tail(&task->list_sched, &tasks);
+}
 
-	if (!policy->assign_task(task)) {
-		errmsg("insufficient memory");
-		return FALSE;
-	}
-	calc_task_det(task);
-	if (!is_schedulable(task)) {
-		errmsg("%s: unschedulable task", desc_task(task));
-		return FALSE;
-	}
+BOOL
+setup_tasks(void)
+{
+	LIST_HEAD(temp);
+	struct list_head	*lp, *next;
 
-	requeue_task(task, 0);
+	list_add(&temp, &tasks);
+	list_del_init(&tasks);
+
+	list_for_each_n (lp, &temp, next) {
+		task_t	*task = list_entry(lp, task_t, list_sched);
+
+		list_del_init(&task->list_sched);
+		if (!policy->assign_task(task)) {
+			errmsg("insufficient memory");
+			return FALSE;
+		}
+		calc_task_det(task);
+		if (!is_schedulable(task)) {
+			errmsg("%s: unschedulable task", desc_task(task));
+			return FALSE;
+		}
+
+		requeue_task(task, 0);
+	}
 
 	return TRUE;
 }
@@ -383,5 +399,22 @@ check_queued_tasks(void)
 			FATAL(3, "%s: invalid deadline", desc_task(task));
 		}
 		ticks += (task->gap_head + task->gap);
+	}
+}
+
+void
+reinit_tasks(void)
+{
+	struct list_head	*lp;
+
+	list_for_each (lp, &tasks) {
+		task_t	*til;
+
+		til = list_entry(lp, task_t, list_sched);
+		til->det = 0;
+		til->det_remain = 0;
+		til->gap_head = 0;
+		til->gap = 0;
+		til->deadline = 0;
 	}
 }

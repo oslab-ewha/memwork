@@ -40,6 +40,7 @@ dfdm_reassign_task(task_t *task)
 }
 
 policy_t	policy_dfdm = {
+	"dfdm",
 	dfdm_assign_task,
 	dfdm_reassign_task
 };
