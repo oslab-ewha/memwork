@@ -108,6 +108,7 @@ void calc_idle_power_consumed_task(task_t *task, unsigned idle);
 void calc_idle_power_consumed(unsigned idle);
 void calc_active_power_consumed(task_t *task, unsigned ret);
 
+void add_utilization(void);
 void report_result(void);
 
 extern const char *desc_task(task_t *task);

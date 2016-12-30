@@ -9,6 +9,8 @@ unsigned	simtime;
 double	total_nwcet;
 policy_t	*policy = &policy_dfdm;
 
+static BOOL	verbose;
+
 static void
 usage(void)
 {
@@ -16,6 +18,7 @@ usage(void)
 "Usage: simrts <options> <config path>\n"
 " <options>\n"
 "      -h: this message\n"
+"      -v: verbose mode\n"
 "      -t <max simulation time>: (default: 1000)\n"
 "      -p <policy>: dfdm(default), dvs, dmem\n"
 	);
@@ -92,6 +95,9 @@ runsim(void)
 		if (!schedule_task(task))
 			return FALSE;
 		check_queued_tasks();
+		add_utilization();
+		if (verbose)
+			show_queued_tasks();
 	}
 	return TRUE;
 }
