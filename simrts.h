@@ -9,6 +9,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <assert.h>
+#include <math.h>
 
 #include "ecm_list.h"
 
@@ -40,14 +41,21 @@ typedef struct {
 
 	/* dynamic execution time */
 	unsigned	det;	/* in tick */
-	/* idle ticks before execution
-	 * If another task is inserted ahead, (idle + det) of the inserted task should be subtracted
-	 */
-	unsigned	idle;	/* in tick */
-	/* remaining ticks to a task deadline time including det.
+
+	/* remaining execution time */
+	unsigned	det_remain;	/* in tick */
+
+	/* for reverting */
+	unsigned	det_old, det_remain_old;
+
+	/* ticks gap from a simtime if a task is a head task */
+	unsigned	gap_head;	/* in tick */
+	/* ticks from a start tick of a following task if any */
+	unsigned	gap;	/* in tick */
+	/* deadline ticks including det
 	 */
 	unsigned	deadline;	/* in tick */
-	struct list_head	list;
+	struct list_head	list_sched;
 } task_t;
 
 typedef struct {
@@ -83,24 +91,26 @@ void load_conf(const char *fpath);
 
 BOOL insert_task(unsigned wcet, unsigned period, unsigned memreq);
 
-task_t *get_edf_task(void);
-BOOL is_schedulable(void);
+void calc_task_det(task_t *task);
+void revert_task_det(task_t *task);
+
+task_t *pop_head_task(void);
+double get_tasks_ndet(void);
+BOOL is_schedulable(task_t *task);
 BOOL schedule_task(task_t *task);
-BOOL requeue_task(task_t *task);
-void calc_det(task_t *task);
+void requeue_task(task_t *task, unsigned ticks);
+void check_queued_tasks(void);
 
 BOOL assign_mem(task_t *task, mem_type_t mem_type);
 void revoke_mem(task_t *task);
 
+void calc_idle_power_consumed_task(task_t *task, unsigned idle);
 void calc_idle_power_consumed(unsigned idle);
-void calc_active_power_consumed(task_t *task);
+void calc_active_power_consumed(task_t *task, unsigned ret);
 
 void report_result(void);
 
-#ifdef DEBUG
-
-extern void print_queued_tasks(void);
-
-#endif
+extern const char *desc_task(task_t *task);
+extern void show_queued_tasks(void);
 
 #endif

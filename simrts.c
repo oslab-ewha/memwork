@@ -88,9 +88,10 @@ runsim(void)
 {
 	task_t	*task;
 
-	while (simtime <= max_simtime && (task = get_edf_task())) {
+	while (simtime <= max_simtime && (task = pop_head_task())) {
 		if (!schedule_task(task))
 			return FALSE;
+		check_queued_tasks();
 	}
 	return TRUE;
 }

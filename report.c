@@ -4,5 +4,6 @@ void
 report_result(void)
 {
 	printf("simulation time elapsed: %u\n", simtime);
-	printf("power consumed: %.3f\n", power_consumed);
+	printf("total power consumed: %.3f\n", power_consumed);
+	printf("average power consumed: %.3f\n", power_consumed / simtime);
 }

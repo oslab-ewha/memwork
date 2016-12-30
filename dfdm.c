@@ -28,8 +28,10 @@ dfdm_reassign_task(task_t *task)
 
 			for (j = n_cpufreqs; j > 0; j--) {
 				task->idx_cpufreq = j;
-				if (is_schedulable())
+				calc_task_det(task);
+				if (is_schedulable(task))
 					return TRUE;
+				revert_task_det(task);
 			}
 			revoke_mem(task);
 		}

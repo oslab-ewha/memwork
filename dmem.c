@@ -24,8 +24,10 @@ dmem_reassign_task(task_t *task)
 
 	for (i = 0; i < 2; i++) {
 		if (assign_mem(task, mem_types_try[i])) {
-			if (is_schedulable())
+			calc_task_det(task);
+			if (is_schedulable(task))
 				return TRUE;
+			revert_task_det(task);
 		}
 	}
 	return FALSE;
