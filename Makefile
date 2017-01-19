@@ -2,7 +2,7 @@ all: simrts
 
 CFLAGS = -g -Wall -DDEBUG
 
-simrts: simrts.o task.o conf.o mem.o power.o report.o dfdm.o dvs.o dmem.o output.o
+simrts: simrts.o task.o conf.o mem.o power.o report.o dfdm.o dvs.o dmem.o fast.o output.o
 	gcc -o simrts $^ -lm
 
 simrts.o: simrts.h ecm_list.h
@@ -12,6 +12,7 @@ mem.o: simrts.h ecm_list.h
 power.o: simrts.h ecm_list.h
 report.o: simrts.h ecm_list.h
 dfdm.o: simrts.h ecm_list.h
+fast.o: simrts.h ecm_list.h
 output.o: simrts.h ecm_list.h
 
 tarball:

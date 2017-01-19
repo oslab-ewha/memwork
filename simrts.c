@@ -3,6 +3,7 @@
 extern policy_t	policy_dfdm;
 extern policy_t	policy_dvs;
 extern policy_t	policy_dmem;
+extern policy_t	policy_fast;
 
 unsigned	max_simtime = 1000;
 unsigned	simtime;
@@ -19,7 +20,7 @@ usage(void)
 "      -h: this message\n"
 "      -v: verbose mode\n"
 "      -t <max simulation time>: (default: 1000)\n"
-"      -p <policy>: dfdm(default), dvs, dmem\n"
+"      -p <policy>: dfdm(default), dvs, dmem, fast\n"
 	);
 }
 
@@ -46,6 +47,8 @@ setup_policy(const char *strpol)
 		policy = &policy_dvs;
 	else if (strcmp(strpol, "dmem") == 0)
 		policy = &policy_dmem;
+	else if (strcmp(strpol, "fast") == 0)
+		policy = &policy_fast;
 	else {
 		FATAL(1, "unknown policy: %s", strpol);
 	}
@@ -110,10 +113,10 @@ runsim(void)
 static void
 runsim_all(void)
 {
-	policy_t	*policies[] = { &policy_dfdm, &policy_dvs, &policy_dmem };
+	policy_t	*policies[] = { &policy_dfdm, &policy_dvs, &policy_dmem, &policy_fast };
 	int	i;
 
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 4; i++) {
 		policy = policies[i];
 		runsim();
 
