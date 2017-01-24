@@ -7,7 +7,7 @@ LIST_HEAD(tasks);
 unsigned	n_tasks;
 
 static task_t *
-create_task(unsigned wcet, unsigned period, unsigned memreq)
+create_task(unsigned wcet, unsigned period, unsigned memreq, double mem_active_ratio)
 {
 	task_t	*task;
 
@@ -15,6 +15,7 @@ create_task(unsigned wcet, unsigned period, unsigned memreq)
 	task->wcet = wcet;
 	task->period = period;
 	task->memreq = memreq;
+	task->mem_active_ratio = mem_active_ratio;
 	INIT_LIST_HEAD(&task->list_sched);
 
 	n_tasks++;
@@ -96,11 +97,11 @@ is_schedulable(task_t *task)
 }
 
 void
-insert_task(unsigned wcet, unsigned period, unsigned memreq)
+insert_task(unsigned wcet, unsigned period, unsigned memreq, double mem_active_ratio)
 {
 	task_t	*task;
 
-	task = create_task(wcet, period, memreq);
+	task = create_task(wcet, period, memreq, mem_active_ratio);
 	list_add_tail(&task->list_sched, &tasks);
 }
 

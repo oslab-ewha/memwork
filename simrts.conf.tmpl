@@ -8,9 +8,9 @@
 nvram 1000 0.7 0.01  0.01
 dram  1000 1   0.1   0.1
 
-# wcet period memreq
+# wcet period memreq mem_active_ratio
 *task
-10 30   200
-10 20   20
- 1 20   20
+10 30   200 0.1
+10 20   20  0.05
+ 1 20   20  0.1
 

@@ -35,6 +35,7 @@ typedef struct {
 	unsigned	wcet;
 	unsigned	period;
 	unsigned	memreq;
+	double		mem_active_ratio;
 
 	int		idx_cpufreq;
 	mem_type_t	mem_type;
@@ -93,7 +94,7 @@ void errmsg(const char *fmt, ...);
 
 void load_conf(const char *fpath);
 
-void insert_task(unsigned wcet, unsigned period, unsigned memreq);
+void insert_task(unsigned wcet, unsigned period, unsigned memreq, double mem_active_ratio);
 BOOL setup_tasks(void);
 
 void calc_task_det(task_t *task);
@@ -111,6 +112,8 @@ BOOL assign_mem(task_t *task, mem_type_t mem_type);
 void revoke_mem(task_t *task);
 
 void calc_idle_power_consumed_task(task_t *task, unsigned idle);
+void calc_idle_power_consumed_task_mem(task_t *task, unsigned idle);
+void calc_idle_power_consumed_task_cpu(task_t *task, unsigned idle);
 void calc_idle_power_consumed(unsigned idle);
 void calc_active_power_consumed(task_t *task, unsigned ret);
 

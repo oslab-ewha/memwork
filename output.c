@@ -5,7 +5,7 @@ desc_task(task_t *task)
 {
 	static char	buf[1024];
 
-	snprintf(buf, 1024, "[%2u: %u,%u,%u] ", task->no, task->wcet, task->period, task->memreq);
+	snprintf(buf, 1024, "[%2u: %u,%u,%u,%.3lf] ", task->no, task->wcet, task->period, task->memreq, task->mem_active_ratio);
 	return buf;
 }
 

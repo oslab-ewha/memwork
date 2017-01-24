@@ -151,6 +151,7 @@ parse_task(FILE *fp)
 
 	while (fgets(buf, 1024, fp)) {
 		unsigned	wcet, period, memreq;
+		double		mem_active_ratio;
 
 		if (buf[0] == '#')
 			continue;
@@ -158,14 +159,14 @@ parse_task(FILE *fp)
 			fseek(fp, -1 * strlen(buf), SEEK_CUR);
 			return;
 		}
-		if (sscanf(buf, "%u %u %u", &wcet, &period, &memreq) != 3) {
+		if (sscanf(buf, "%u %u %u %lf", &wcet, &period, &memreq, &mem_active_ratio) != 4) {
 			FATAL(2, "cannot load configuration: invalid task format: %s", trim(buf));
 		}
 
 		if (wcet >= period) {
 			FATAL(2, "wcet is larger or equal than period: %s", trim(buf));
 		}
-		insert_task(wcet, period, memreq);
+		insert_task(wcet, period, memreq, mem_active_ratio);
 	}
 }
 

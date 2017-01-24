@@ -12,6 +12,8 @@ mem.o: simrts.h ecm_list.h
 power.o: simrts.h ecm_list.h
 report.o: simrts.h ecm_list.h
 dfdm.o: simrts.h ecm_list.h
+dvs.o: simrts.h ecm_list.h
+dmem.o: simrts.h ecm_list.h
 fast.o: simrts.h ecm_list.h
 output.o: simrts.h ecm_list.h
 

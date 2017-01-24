@@ -72,7 +72,7 @@ parse_args(int argc, char *argv[])
 			break;
 		case 'h':
 			usage();
-			break;
+			exit(0);
 		default:
 			errmsg("invalid option");
 			usage();
