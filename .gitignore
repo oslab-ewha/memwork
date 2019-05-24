@@ -3,5 +3,6 @@
 simrts
 cscope.out
 *.conf
+*.tar
 *.tgz
 *.swp
