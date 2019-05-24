@@ -36,6 +36,7 @@ cleanup_report(void)
 	power_consumed_cpu_idle = 0;
 	power_consumed_mem_active = 0;
 	power_consumed_mem_idle = 0;
+
 	sum_utils = 0;
 	n_utils = 0;
 }

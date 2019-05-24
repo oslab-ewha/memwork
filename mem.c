@@ -22,6 +22,3 @@ revoke_mem(task_t *task)
 	mems[task->mem_type - 1].amount -= task->memreq;
 	task->mem_type = MEMTYPE_NONE;
 }
-
-
-
