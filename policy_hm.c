@@ -1,7 +1,7 @@
 #include "simrts.h"
 
 static BOOL
-dmem_assign_task(task_t *task)
+hm_assign_task(task_t *task)
 {
 	mem_type_t	mem_types_try[] = { MEMTYPE_DRAM, MEMTYPE_NVRAM };
 	int	i;
@@ -15,7 +15,7 @@ dmem_assign_task(task_t *task)
 }
 
 static BOOL
-dmem_reassign_task(task_t *task)
+hm_reassign_task(task_t *task)
 {
 	mem_type_t	mem_types_try[] = { MEMTYPE_NVRAM, MEMTYPE_DRAM };
 	int	i;
@@ -33,8 +33,8 @@ dmem_reassign_task(task_t *task)
 	return FALSE;
 }
 
-policy_t	policy_dmem = {
-	"dmem",
-	dmem_assign_task,
-	dmem_reassign_task
+policy_t	policy_hm = {
+	"hm",
+	hm_assign_task,
+	hm_reassign_task
 };

@@ -1,9 +1,9 @@
 #include "simrts.h"
 
-extern policy_t	policy_dfdm;
-extern policy_t	policy_dvs;
-extern policy_t	policy_dmem;
-extern policy_t	policy_fast;
+extern policy_t	policy_dvshm;
+extern policy_t	policy_dvsdram;
+extern policy_t	policy_hm;
+extern policy_t	policy_dram;
 
 unsigned	max_simtime = 1000;
 unsigned	simtime;
@@ -20,7 +20,7 @@ usage(void)
 "      -h: this message\n"
 "      -v: verbose mode\n"
 "      -t <max simulation time>: (default: 1000)\n"
-"      -p <policy>: dfdm(default), dvs, dmem, fast\n"
+"      -p <policy>: dvshm(default), dvsdram, hm, dram\n"
 	);
 }
 
@@ -41,14 +41,14 @@ errmsg(const char *fmt, ...)
 static void
 setup_policy(const char *strpol)
 {
-	if (strcmp(strpol, "dfdm") == 0)
-		policy = &policy_dfdm;
-	else if (strcmp(strpol, "dvs") == 0)
-		policy = &policy_dvs;
-	else if (strcmp(strpol, "dmem") == 0)
-		policy = &policy_dmem;
-	else if (strcmp(strpol, "fast") == 0)
-		policy = &policy_fast;
+	if (strcmp(strpol, "dvshm") == 0)
+		policy = &policy_dvshm;
+	else if (strcmp(strpol, "dvsdram") == 0)
+		policy = &policy_dvsdram;
+	else if (strcmp(strpol, "hm") == 0)
+		policy = &policy_hm;
+	else if (strcmp(strpol, "dram") == 0)
+		policy = &policy_dram;
 	else {
 		FATAL(1, "unknown policy: %s", strpol);
 	}
@@ -113,7 +113,7 @@ runsim(void)
 static void
 runsim_all(void)
 {
-	policy_t	*policies[] = { &policy_dfdm, &policy_dvs, &policy_dmem, &policy_fast };
+	policy_t	*policies[] = { &policy_dvshm, &policy_dvsdram, &policy_hm, &policy_dram };
 	int	i;
 
 	for (i = 0; i < 4; i++) {

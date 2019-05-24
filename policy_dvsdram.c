@@ -1,7 +1,7 @@
 #include "simrts.h"
 
 static BOOL
-dvs_assign_task(task_t *task)
+dvsdram_assign_task(task_t *task)
 {
 	task->idx_cpufreq = 1;
 	assign_mem(task, MEMTYPE_DRAM);
@@ -9,7 +9,7 @@ dvs_assign_task(task_t *task)
 }
 
 static BOOL
-dvs_reassign_task(task_t *task)
+dvsdram_reassign_task(task_t *task)
 {
 	int	i;
 
@@ -23,8 +23,8 @@ dvs_reassign_task(task_t *task)
 	return FALSE;
 }
 
-policy_t	policy_dvs = {
-	"dvs",
-	dvs_assign_task,
-	dvs_reassign_task
+policy_t	policy_dvsdram = {
+	"dvs-dram",
+	dvsdram_assign_task,
+	dvsdram_reassign_task
 };
