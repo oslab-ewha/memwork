@@ -4,6 +4,7 @@ extern policy_t	policy_dvshm;
 extern policy_t	policy_dvsdram;
 extern policy_t	policy_hm;
 extern policy_t	policy_dram;
+extern policy_t	policy_fixed;
 
 unsigned	max_simtime = 1000;
 unsigned	simtime;
@@ -20,7 +21,7 @@ usage(void)
 "      -h: this message\n"
 "      -v: verbose mode\n"
 "      -t <max simulation time>: (default: 1000)\n"
-"      -p <policy>: dvshm(default), dvsdram, hm, dram\n"
+"      -p <policy>: dvshm(default), dvsdram, hm, dram, fixed\n"
 	);
 }
 
@@ -49,6 +50,8 @@ setup_policy(const char *strpol)
 		policy = &policy_hm;
 	else if (strcmp(strpol, "dram") == 0)
 		policy = &policy_dram;
+	else if (strcmp(strpol, "fixed") == 0)
+		policy = &policy_fixed;
 	else {
 		FATAL(1, "unknown policy: %s", strpol);
 	}
@@ -93,6 +96,11 @@ runsim(void)
 {
 	task_t	*task;
 
+	if (policy->init != NULL) {
+		if (!policy->init())
+			FATAL(3, "failed to initialize policy");
+	}
+
 	if (!setup_tasks()) {
 		FATAL(3, "failed to setup tasks");
 	}
@@ -113,10 +121,10 @@ runsim(void)
 static void
 runsim_all(void)
 {
-	policy_t	*policies[] = { &policy_dvshm, &policy_dvsdram, &policy_hm, &policy_dram };
+	policy_t	*policies[] = { &policy_dvshm, &policy_dvsdram, &policy_hm, &policy_dram, &policy_fixed };
 	int	i;
 
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < 5; i++) {
 		policy = policies[i];
 		runsim();
 

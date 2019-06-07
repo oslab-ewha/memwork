@@ -25,6 +25,7 @@ dvsdram_reassign_task(task_t *task)
 
 policy_t	policy_dvsdram = {
 	"dvs-dram",
+	NULL,
 	dvsdram_assign_task,
 	dvsdram_reassign_task
 };

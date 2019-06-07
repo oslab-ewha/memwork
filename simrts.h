@@ -75,6 +75,7 @@ typedef struct {
 
 typedef struct {
 	const char	*name;
+	BOOL (*init)(void);
 	BOOL (*assign_task)(task_t *task);
 	BOOL (*reassign_task)(task_t *task);
 } policy_t;
