@@ -62,17 +62,6 @@ insert_cpufreq(double wcet_scale, double power_active, double power_idle)
 }
 
 static void
-insert_mem(mem_type_t mem_type, unsigned max_capacity, double wcet_scale, double power_active, double power_idle)
-{
-	mem_t	*mem = &mems[mem_type - 1];
-
-	mem->wcet_scale = wcet_scale;
-	mem->max_capacity = max_capacity;
-	mem->power_active = power_active;
-	mem->power_idle = power_idle;
-}
-
-static void
 parse_cpufreq(FILE *fp)
 {
 	char	buf[1024];
@@ -110,7 +99,6 @@ parse_mem(FILE *fp)
 	while (fgets(buf, 1024, fp)) {
 		unsigned	max_capacity;
 		double		wcet_scale, power_active, power_idle;
-		mem_type_t	mem_type;
 		char		type[1024];
 
 		if (buf[0] == '#')
@@ -133,14 +121,7 @@ parse_mem(FILE *fp)
 			FATAL(2, "invalid memory power: %s", trim(buf));
 		}
 
-		if (strcmp(type, "nvram") == 0)
-			mem_type = MEMTYPE_NVRAM;
-		else if (strcmp(type, "dram") == 0)
-			mem_type = MEMTYPE_DRAM;
-		else {
-			FATAL(2, "invalid memory type: %s", trim(buf));
-		}
-		insert_mem(mem_type, max_capacity, wcet_scale, power_active, power_idle);
+		insert_mem(type, max_capacity, wcet_scale, power_active, power_idle);
 	}
 }
 

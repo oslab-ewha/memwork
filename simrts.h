@@ -65,6 +65,7 @@ typedef struct {
 } cpufreq_t;
 
 typedef struct {
+	mem_type_t	mem_type;
 	unsigned	max_capacity;
 	double		wcet_scale;
 	double		power_active, power_idle;	/* per tick * mem_req */
@@ -86,6 +87,7 @@ extern unsigned	n_cpufreqs;
 extern cpufreq_t	cpufreqs[];
 extern policy_t	*policy;
 extern struct list_head	tasks;
+extern unsigned	n_mem_types;
 extern mem_t	mems[];
 extern double	power_consumed_cpu_active;
 extern double	power_consumed_mem_active;
@@ -113,6 +115,7 @@ void requeue_task(task_t *task, unsigned ticks);
 void check_queued_tasks(void);
 void reinit_tasks(void);
 
+void insert_mem(const char *memstr, unsigned max_capacity, double wcet_scale, double power_active, double power_idle);
 BOOL assign_mem(task_t *task, mem_type_t mem_type);
 void revoke_mem(task_t *task);
 
