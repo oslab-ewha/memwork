@@ -40,7 +40,8 @@ dvshm_reassign_task(task_t *task)
 }
 
 policy_t	policy_dvshm = {
-	"dvs-hm",
+	"dvshm",
+	"DVS with hybrid memory(dvs-hm)",
 	FALSE,
 	NULL,
 	dvshm_assign_task,

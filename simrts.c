@@ -1,5 +1,18 @@
 #include "simrts.h"
 
+static void
+usage(void)
+{
+	fprintf(stdout,
+"Usage: simrts <options> <config path>\n"
+" <options>\n"
+"      -h: this message\n"
+"      -v: verbose mode\n"
+"      -t <max simulation time>: (default: 1000)\n"
+"      -p <policy>: dvshm, dvsdram, hm, dram, fixed\n"
+	);
+}
+
 extern policy_t	policy_dvshm;
 extern policy_t	policy_dvsdram;
 extern policy_t	policy_hm;
@@ -12,18 +25,10 @@ policy_t	*policy = NULL;
 
 static BOOL	verbose;
 
-static void
-usage(void)
-{
-	fprintf(stdout,
-"Usage: simrts <options> <config path>\n"
-" <options>\n"
-"      -h: this message\n"
-"      -v: verbose mode\n"
-"      -t <max simulation time>: (default: 1000)\n"
-"      -p <policy>: dvshm(default), dvsdram, hm, dram, fixed\n"
-	);
-}
+static policy_t	*all_policies[] = {
+	&policy_dvshm, &policy_dvsdram, &policy_hm, &policy_dram, &policy_fixed,
+	NULL
+};
 
 void
 errmsg(const char *fmt, ...)
@@ -42,19 +47,15 @@ errmsg(const char *fmt, ...)
 static void
 setup_policy(const char *strpol)
 {
-	if (strcmp(strpol, "dvshm") == 0)
-		policy = &policy_dvshm;
-	else if (strcmp(strpol, "dvsdram") == 0)
-		policy = &policy_dvsdram;
-	else if (strcmp(strpol, "hm") == 0)
-		policy = &policy_hm;
-	else if (strcmp(strpol, "dram") == 0)
-		policy = &policy_dram;
-	else if (strcmp(strpol, "fixed") == 0)
-		policy = &policy_fixed;
-	else {
-		FATAL(1, "unknown policy: %s", strpol);
+	int	i;
+
+	for (i = 0; all_policies[i]; i++) {
+		if (strcmp(strpol, all_policies[i]->name) == 0) {
+			policy = all_policies[i];
+			return;
+		}
 	}
+	FATAL(1, "unknown policy: %s", strpol);
 }
 
 static void
@@ -121,13 +122,12 @@ runsim(void)
 static void
 runsim_all(void)
 {
-	policy_t	*policies[] = { &policy_dvshm, &policy_dvsdram, &policy_hm, &policy_dram, &policy_fixed };
 	int	i;
 
 	init_mems();
 
-	for (i = 0; i < 5; i++) {
-		policy = policies[i];
+	for (i = 0; all_policies[i]; i++) {
+		policy = all_policies[i];
 		runsim();
 
 		simtime = 0;

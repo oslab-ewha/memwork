@@ -15,6 +15,7 @@ dram_reassign_task(task_t *task)
 
 policy_t	policy_dram = {
 	"dram",
+	"No DVS with dram(dram)",
 	TRUE,
 	NULL,
 	dram_assign_task,

@@ -25,7 +25,8 @@ dvsdram_reassign_task(task_t *task)
 }
 
 policy_t	policy_dvsdram = {
-	"dvs-dram",
+	"dvsdram",
+	"DVS with dram(dvs-dram)",
 	TRUE,
 	NULL,
 	dvsdram_assign_task,

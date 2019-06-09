@@ -19,7 +19,7 @@ report_result(void)
 	double	power_consumed_idle = power_consumed_cpu_idle + power_consumed_mem_idle;
 	double	power_consumed = power_consumed_cpu + power_consumed_mem;
 
-	printf("policy: %s\n", policy->name);
+	printf("policy: %s\n", policy->desc);
 	printf("simulation time elapsed: %u\n", simtime);
 	printf("average power consumed: %.3lf\n", power_consumed / simtime);
 	printf("CPU + MEM power consumed: %.3lf + %.3lf\n",

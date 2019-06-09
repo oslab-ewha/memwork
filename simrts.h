@@ -76,6 +76,7 @@ typedef struct {
 
 typedef struct {
 	const char	*name;
+	const char	*desc;
 	BOOL single_memtype;
 	BOOL (*init)(void);
 	BOOL (*assign_task)(task_t *task);

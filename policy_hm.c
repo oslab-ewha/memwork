@@ -35,6 +35,7 @@ hm_reassign_task(task_t *task)
 
 policy_t	policy_hm = {
 	"hm",
+	"hybrid memory(hm)",
 	FALSE,
 	NULL,
 	hm_assign_task,
