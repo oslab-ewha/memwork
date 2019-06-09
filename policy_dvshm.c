@@ -41,6 +41,7 @@ dvshm_reassign_task(task_t *task)
 
 policy_t	policy_dvshm = {
 	"dvs-hm",
+	FALSE,
 	NULL,
 	dvshm_assign_task,
 	dvshm_reassign_task

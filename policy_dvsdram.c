@@ -4,7 +4,8 @@ static BOOL
 dvsdram_assign_task(task_t *task)
 {
 	task->idx_cpufreq = 1;
-	assign_mem(task, MEMTYPE_DRAM);
+	if (!assign_mem(task, MEMTYPE_DRAM))
+		return FALSE;
 	return TRUE;
 }
 
@@ -25,6 +26,7 @@ dvsdram_reassign_task(task_t *task)
 
 policy_t	policy_dvsdram = {
 	"dvs-dram",
+	TRUE,
 	NULL,
 	dvsdram_assign_task,
 	dvsdram_reassign_task

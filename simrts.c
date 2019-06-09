@@ -124,6 +124,8 @@ runsim_all(void)
 	policy_t	*policies[] = { &policy_dvshm, &policy_dvsdram, &policy_hm, &policy_dram, &policy_fixed };
 	int	i;
 
+	init_mems();
+
 	for (i = 0; i < 5; i++) {
 		policy = policies[i];
 		runsim();
@@ -131,6 +133,7 @@ runsim_all(void)
 		simtime = 0;
 		cleanup_report();
 		reinit_tasks();
+		reinit_mems();
 	}
 }
 

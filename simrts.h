@@ -75,6 +75,7 @@ typedef struct {
 
 typedef struct {
 	const char	*name;
+	BOOL single_memtype;
 	BOOL (*init)(void);
 	BOOL (*assign_task)(task_t *task);
 	BOOL (*reassign_task)(task_t *task);
@@ -94,6 +95,9 @@ extern double	power_consumed_mem_idle;
 void errmsg(const char *fmt, ...);
 
 void load_conf(const char *fpath);
+
+void init_mems(void);
+void reinit_mems(void);
 
 void insert_task(unsigned wcet, unsigned period, unsigned memreq, double mem_active_ratio);
 BOOL setup_tasks(void);

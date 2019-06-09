@@ -48,6 +48,7 @@ fixed_reassign_task(task_t *task)
 
 policy_t	policy_fixed = {
 	"fixed",
+	FALSE,
 	fixed_init,
 	fixed_assign_task,
 	fixed_reassign_task
