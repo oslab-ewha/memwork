@@ -18,6 +18,7 @@ extern policy_t	policy_dvsdram;
 extern policy_t	policy_hm;
 extern policy_t	policy_dram;
 extern policy_t	policy_fixed;
+extern policy_t	policy_dvshm_greedy;
 
 unsigned	max_simtime = 1000;
 unsigned	simtime;
@@ -27,7 +28,7 @@ static BOOL	verbose;
 
 static policy_t	*all_policies[] = {
 	&policy_dvshm, &policy_dvsdram, &policy_hm, &policy_dram, &policy_fixed,
-	NULL
+	&policy_dvshm_greedy, NULL
 };
 
 void

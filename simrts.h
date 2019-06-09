@@ -84,6 +84,7 @@ typedef struct {
 } policy_t;
 
 extern unsigned simtime;
+extern unsigned	n_tasks;
 extern unsigned	n_cpufreqs;
 extern cpufreq_t	cpufreqs[];
 extern policy_t	*policy;
