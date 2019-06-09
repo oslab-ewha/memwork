@@ -145,8 +145,10 @@ main(int argc, char *argv[])
 
 	if (policy == NULL)
 		runsim_all();
-	else
+	else {
+		init_mems();
 		runsim();
+	}
 
 	return 0;
 }

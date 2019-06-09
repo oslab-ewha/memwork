@@ -124,9 +124,7 @@ BOOL assign_mem(task_t *task, mem_type_t mem_type);
 void revoke_mem(task_t *task);
 
 void calc_idle_power_consumed_task(task_t *task, unsigned idle);
-void calc_idle_power_consumed_task_mem(task_t *task, unsigned idle);
-void calc_idle_power_consumed_task_cpu(task_t *task, unsigned idle);
-void calc_idle_power_consumed(unsigned idle);
+void calc_idle_power_consumed_mem(unsigned idle);
 void calc_active_power_consumed(task_t *task, unsigned ret);
 
 void add_utilization(void);

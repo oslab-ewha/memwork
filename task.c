@@ -337,7 +337,7 @@ schedule_task(task_t *task)
 	unsigned	ret;	/* real execution time */
 
 	simtime += task->gap_head;
-	calc_idle_power_consumed(task->gap_head);
+	calc_idle_power_consumed_mem(task->gap_head);
 	calc_idle_power_consumed_task(task, task->gap_head);
 	task->gap_head = 0;
 
@@ -366,7 +366,7 @@ schedule_task(task_t *task)
 		if (idle >= task->deadline)
 			idle = task->deadline;
 		simtime += idle;
-		calc_idle_power_consumed(idle);
+		calc_idle_power_consumed_mem(idle);
 		calc_idle_power_consumed_task(task, idle);
 		task->deadline -= idle;
 		task->gap -= idle;
