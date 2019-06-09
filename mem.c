@@ -47,7 +47,7 @@ assign_mem(task_t *task, mem_type_t mem_type)
 
 	max_capacity = policy->single_memtype ? total_capacity: mem->max_capacity;
 
-	if (max_capacity > task->memreq + mem->amount) {
+	if (max_capacity >= task->memreq + mem->amount) {
 		task->mem_type = mem_type;
 		mem->amount += task->memreq;
 		return TRUE;
