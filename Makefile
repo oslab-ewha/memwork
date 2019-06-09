@@ -20,3 +20,6 @@ output.o: simrts.h ecm_list.h
 
 tarball:
 	tar czvf simrts.tgz *.[ch] *.tmpl Makefile
+
+clean:
+	rm -f *.o simrts
