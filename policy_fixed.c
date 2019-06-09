@@ -34,7 +34,7 @@ fixed_init(void)
 static BOOL
 fixed_assign_task(task_t *task)
 {
-	task_info_t	*info = task_infos + task->no;
+	task_info_t	*info = task_infos + (task->no - 1);
 	
 	task->idx_cpufreq = info->cpufreq_idx + 1;
 	return assign_mem(task, info->mem_idx + 1);
