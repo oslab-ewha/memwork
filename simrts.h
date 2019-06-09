@@ -116,6 +116,8 @@ void requeue_task(task_t *task, unsigned ticks);
 void check_queued_tasks(void);
 void reinit_tasks(void);
 
+BOOL insert_cpufreq(double wcet_scale, double power_active, double power_idle);
+
 void insert_mem(const char *memstr, unsigned max_capacity, double wcet_scale, double power_active, double power_idle);
 BOOL assign_mem(task_t *task, mem_type_t mem_type);
 void revoke_mem(task_t *task);

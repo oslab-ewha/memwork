@@ -4,7 +4,7 @@ CFLAGS = -g -Wall -DDEBUG
 
 POLICY = dvshm dvsdram hm dram fixed
 
-SIMRTS_OBJS = simrts.o task.o mem.o power.o conf.o report.o output.o
+SIMRTS_OBJS = simrts.o task.o cpu.o mem.o power.o conf.o report.o output.o
 POLICY_OBJS = $(POLICY:%=policy_%.o)
 
 simrts: $(SIMRTS_OBJS) $(POLICY_OBJS)
