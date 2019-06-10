@@ -83,6 +83,7 @@ typedef struct {
 	BOOL (*reassign_task)(task_t *task);
 } policy_t;
 
+extern BOOL	verbose;
 extern unsigned simtime;
 extern unsigned	n_tasks;
 extern unsigned	n_cpufreqs;
@@ -128,6 +129,7 @@ void calc_idle_power_consumed_mem(unsigned idle);
 void calc_active_power_consumed(task_t *task, unsigned ret);
 
 void add_utilization(void);
+void report_header(void);
 void report_result(void);
 void cleanup_report(void);
 

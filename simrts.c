@@ -24,7 +24,7 @@ unsigned	max_simtime = 1000;
 unsigned	simtime;
 policy_t	*policy = NULL;
 
-static BOOL	verbose;
+BOOL	verbose;
 
 static policy_t	*all_policies[] = {
 	&policy_dvshm, &policy_dvsdram, &policy_hm, &policy_dram, &policy_fixed,
@@ -64,7 +64,7 @@ parse_args(int argc, char *argv[])
 {
 	int	c;
 
-	while ((c = getopt(argc, argv, "t:p:h")) != -1) {
+	while ((c = getopt(argc, argv, "t:p:vh")) != -1) {
 		switch (c) {
 		case 't':
 			if (sscanf(optarg, "%u", &max_simtime) != 1) {
@@ -74,6 +74,9 @@ parse_args(int argc, char *argv[])
 			break;
 		case 'p':
 			setup_policy(optarg);
+			break;
+		case 'v':
+			verbose = TRUE;
 			break;
 		case 'h':
 			usage();
@@ -127,6 +130,7 @@ runsim_all(void)
 
 	init_mems();
 
+	report_header();
 	for (i = 0; all_policies[i]; i++) {
 		policy = all_policies[i];
 		runsim();
