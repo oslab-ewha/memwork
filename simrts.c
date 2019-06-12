@@ -107,7 +107,8 @@ runsim(void)
 	}
 
 	if (!setup_tasks()) {
-		FATAL(3, "failed to setup tasks");
+		errmsg("failed to setup tasks");
+		return;
 	}
 
 	while (simtime <= max_simtime && (task = pop_head_task())) {

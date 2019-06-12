@@ -26,8 +26,8 @@ typedef int	BOOL;
 
 typedef enum {
 	MEMTYPE_NONE = 0,
-	MEMTYPE_NVRAM = 1,
-	MEMTYPE_DRAM = 2,
+	MEMTYPE_DRAM = 1,
+	MEMTYPE_NVRAM = 2,
 } mem_type_t;
 
 typedef struct {

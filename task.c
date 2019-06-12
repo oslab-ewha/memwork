@@ -31,11 +31,8 @@ calc_task_det(task_t *task)
 {
 	double		det_new_dbl;
 
-#if 1
-	det_new_dbl = task->wcet / (cpufreqs[task->idx_cpufreq - 1].wcet_scale * mems[task->mem_type - 1].wcet_scale);
-#else
 	det_new_dbl = task->wcet / MIN(cpufreqs[task->idx_cpufreq - 1].wcet_scale, mems[task->mem_type - 1].wcet_scale);
-#endif
+
 	task->det_old = task->det;
 	task->det = (int)round(det_new_dbl);
 	if (task->det == 0)
