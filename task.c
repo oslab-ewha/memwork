@@ -24,14 +24,12 @@ create_task(unsigned wcet, unsigned period, unsigned memreq, double mem_active_r
 	return task;
 }
 
-#define MIN(a, b)	((a) < (b) ? (a): (b))
-
 void
 calc_task_det(task_t *task)
 {
 	double		det_new_dbl;
 
-	det_new_dbl = task->wcet / MIN(cpufreqs[task->idx_cpufreq - 1].wcet_scale, mems[task->mem_type - 1].wcet_scale);
+	det_new_dbl = task->wcet / (cpufreqs[task->idx_cpufreq - 1].wcet_scale * mems[task->mem_type - 1].wcet_scale);
 
 	task->det_old = task->det;
 	task->det = (int)round(det_new_dbl);

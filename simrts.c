@@ -19,6 +19,7 @@ extern policy_t	policy_hm;
 extern policy_t	policy_dram;
 extern policy_t	policy_fixed;
 extern policy_t	policy_dvshm_greedy;
+extern policy_t	policy_hm_chk;
 
 unsigned	max_simtime = 1000;
 unsigned	simtime;
