@@ -9,6 +9,7 @@ static void
 calc_idle_power_consumed_cpu(unsigned idle)
 {
 	power_consumed_cpu_idle += (idle * cpufreqs[n_cpufreqs - 1].power_idle);
+	power_consumed_cpu_idle *= 0.12;
 }
 
 static void
