@@ -1,6 +1,6 @@
-# simrts (SIMulator for Real-time Task Scheduling)
+# memwork (Workload estimation tool from memory traces)
 
-- This simulator aims to prove our idea about DVS-HM(Dynamic Voltage Scaling with Hybrid Memory)
+- This tool aims to prove our idea about automated workload estimation
 
 ## Build
 
@@ -9,5 +9,5 @@
 
 ## Running
 
-- \# ./simrts -h
+- \# ./memwork -h
   - This shows help messages and you can find a rough command line description.
