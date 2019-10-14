@@ -3,7 +3,7 @@
 static BOOL
 dram_assign_task(task_t *task)
 {
-	task->idx_cpufreq = 1;
+	task->idx_cpufreq = 2;
 	return assign_mem(task, MEMTYPE_DRAM);
 }
 
@@ -15,7 +15,7 @@ dram_reassign_task(task_t *task)
 
 policy_t	policy_dram = {
 	"dram",
-	"No DVS with dram(dram)",
+	"No DVS with dram(dram) testing",
 	TRUE,
 	NULL,
 	dram_assign_task,
