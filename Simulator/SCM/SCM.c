@@ -255,7 +255,7 @@ char	**argv;
 #endif 
 #ifdef MULTITRACE 
 		ret = fscanf(fp,"%u %u %u %c\n", &blkno,&vnode,&pblkno,&op);
-		//printf("%u %u %u %c\n", blkno,vnode,pblkno,op);
+		printf("input data : %u %u %u %c\n", blkno,vnode,pblkno,op);
 		//ret = scanf("%u %u %u %u %c\n", &blkno,&vnode,&pblkno,&pid,&op);
 		//ret = scanf("%u %u %u %u\n",&blkno,&vnode,&pblkno,&pid);
 		//printf("%u %u %u %u %c\n", blkno,vnode,pblkno,pid,op);
@@ -328,6 +328,7 @@ char	**argv;
 		}*/
 		if(curVtime%10000 == 0) {
 			replot();
+			printf("Hit ratio = %f\n(", (float) hit / (float) curVtime);
 		}
 	}
 	printstat();
@@ -464,19 +465,22 @@ init()
 
 }
 
-detect_save(detectResult, blkno, vnode, pblkno)
-unsigned int detectResult,blkno, vnode, pblkno;
+detect_save(detectResult, blkno, vnode, pblkno, period)
+unsigned int detectResult,blkno, vnode, pblkno, period;
 {
 //lineNum, blk
 	switch(detectResult){
 	case SEQ:
 		fprintf(seq_f,"%u %u %u %u\n", lineNum, blkno, vnode, pblkno);
+		printf("%s %u %u %u %u\n", "SEQ", blkno, vnode, pblkno, period);
 		break;
 	case LOOP:
 		fprintf(loop_f,"%u %u %u %u\n", lineNum, blkno, vnode, pblkno);
+		printf("%s %u %u %u %u\n", "LOOP", blkno, vnode, pblkno, period);
 		break;
 	case OTHERS:
 		fprintf(other_f,"%u %u %u %u\n", lineNum, blkno, vnode, pblkno);
+		printf("%s %u %u %u %u\n", "OTHERS", blkno, vnode, pblkno, period);
 		break;
 	}
 }
@@ -507,7 +511,7 @@ unsigned int	blkno,vnode,pblkno;
 	else curLoopPeriod = 0;
 	    
 	detectResult = putInSeqLoopDetect(vnode,pblkno,&curLoopPeriod);
-	detect_save(detectResult, blkno, vnode, pblkno);
+	detect_save(detectResult, blkno, vnode, pblkno, curLoopPeriod);
 	
 	if (bufp != NULL 
 		&& bufp->where >= 0 && bufp->where < REALLRU) {
@@ -1460,6 +1464,8 @@ checkAvgMarginalGain()
 	curMarginalGainOth=(avgC/pow(checkSize,avgK)-avgC/pow(checkSize+1.0,avgK)+curMarginalGainOth)/2.0; 
     else curMarginalGainOth=avgC/pow(checkSize,avgK)-avgC/pow(checkSize+1.0,avgK); 
 
+
+	printf("LRU block's Marginal Gain: %f\n",curMarginalGainOth);
 
     return(TRUE);
 }
